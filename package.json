@@ -1,6 +1,6 @@
 {
   "name": "@pigeonmuyz/openclaw-onebot12",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "OneBot v12 protocol channel plugin for OpenClaw",
   "license": "MIT",
   "publishConfig": { "access": "public" },
