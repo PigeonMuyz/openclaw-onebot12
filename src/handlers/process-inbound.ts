@@ -99,6 +99,25 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
         return;
     }
 
+    // ===== /sid 查看用户 ID 信息 =====
+    if (trimmedCmd === "/sid") {
+        const userId = String(msg.user_id ?? "");
+        const isGroup = msg.detail_type === "group";
+        const platform = msg.self?.platform ?? "unknown";
+        const lines = [
+            `👤 用户 ID: ${userId}`,
+            `📱 平台: ${platform}`,
+            ...(isGroup && msg.group_id ? [`👥 群 ID: ${msg.group_id}`] : []),
+            `🤖 Bot ID: ${msg.self?.user_id ?? "unknown"}`,
+        ];
+        const getConfig = () => getOneBot12Config(api);
+        try {
+            if (isGroup && msg.group_id) await sendGroupMsg(String(msg.group_id), lines.join("\n"), getConfig);
+            else await sendPrivateMsg(userId, lines.join("\n"), getConfig);
+        } catch (_) {}
+        return;
+    }
+
     // v12: detail_type 替代 message_type
     const isGroup = msg.detail_type === "group";
     const cfg = api.config;
