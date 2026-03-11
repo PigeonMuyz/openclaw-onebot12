@@ -344,6 +344,20 @@ export async function getSelfInfo(): Promise<{ user_id: string; user_name?: stri
     } catch { return null; }
 }
 
+/** 获取用户信息（v12: get_user_info） */
+export async function getUserInfo(userId: string): Promise<{
+    user_id: string;
+    user_name?: string;
+    user_displayname?: string;
+} | null> {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return null;
+    try {
+        const res = await sendOneBot12Action(ws, "get_user_info", { user_id: userId });
+        if (res?.status === "ok" && res?.data) return res.data;
+        return null;
+    } catch { return null; }
+}
+
 /** 头像 URL */
 export function getAvatarUrl(userId: string, size: number = 640): string {
     return `https://q1.qlogo.cn/g?b=qq&nk=${userId}&s=${size}`;

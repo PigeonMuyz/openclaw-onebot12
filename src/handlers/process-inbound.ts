@@ -22,6 +22,7 @@ import {
     sendGroupForwardMsg,
     sendPrivateForwardMsg,
     getMsg,
+    getUserInfo,
 } from "../connection.js";
 import { setActiveReplyTarget, clearActiveReplyTarget, setActiveReplySessionId, setForwardSuppressDelivery } from "../reply-context.js";
 import { loadPluginSdk, getSdk } from "../sdk.js";
@@ -104,8 +105,11 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
         const userId = String(msg.user_id ?? "");
         const isGroup = msg.detail_type === "group";
         const platform = msg.self?.platform ?? "unknown";
+        const userInfo = await getUserInfo(userId);
         const lines = [
             `👤 用户 ID: ${userId}`,
+            ...(userInfo?.user_name ? [`📛 用户名: ${userInfo.user_name}`] : []),
+            ...(userInfo?.user_displayname ? [`🏷️ 显示名: ${userInfo.user_displayname}`] : []),
             `📱 平台: ${platform}`,
             ...(isGroup && msg.group_id ? [`👥 群 ID: ${msg.group_id}`] : []),
             `🤖 Bot ID: ${msg.self?.user_id ?? "unknown"}`,
@@ -176,9 +180,9 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
 
     const envelopeOptions = runtime.channel.reply?.resolveEnvelopeFormatOptions?.(cfg) ?? {};
     const chatType = isGroup ? "group" : "direct";
-    // 从消息中提取昵称（v12 部分实现会在事件中包含 sender 信息）
-    const senderObj = (msg as any).sender;
-    const nickname = senderObj?.card || senderObj?.nickname || senderObj?.user_name || senderObj?.user_displayname || "";
+    // 通过 get_user_info API 获取用户昵称
+    const userInfo = await getUserInfo(userId);
+    const nickname = userInfo?.user_displayname || userInfo?.user_name || "";
     const fromLabel = nickname ? `${nickname} (@${userId})` : userId;
 
     const formattedBody =
