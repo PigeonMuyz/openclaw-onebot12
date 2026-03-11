@@ -4,22 +4,30 @@
 
 import { OneBot12ChannelPlugin } from "./channel.js";
 import { registerService } from "./service.js";
-import { runOneBot12Setup } from "./setup.js";
 
-export default function activate(api: any): void {
+export default function register(api: any): void {
     (globalThis as any).__onebot12Api = api;
+    (globalThis as any).__onebot12GatewayConfig = api.config;
 
-    api.registerChannelPlugin?.(OneBot12ChannelPlugin);
+    api.registerChannel({ plugin: OneBot12ChannelPlugin });
+
+    if (typeof api.registerCli === "function") {
+        api.registerCli(
+            (ctx: any) => {
+                const prog = ctx.program;
+                if (prog && typeof prog.command === "function") {
+                    const onebot12 = prog.command("onebot12").description("OneBot v12 渠道配置");
+                    onebot12.command("setup").description("交互式配置 OneBot v12 连接参数").action(async () => {
+                        const { runOneBot12Setup } = await import("./setup.js");
+                        await runOneBot12Setup();
+                    });
+                }
+            },
+            { commands: ["onebot12"] }
+        );
+    }
+
     registerService(api);
-
-    // CLI 命令
-    api.registerCliCommand?.({
-        command: "onebot12 setup",
-        description: "配置 OneBot 12 通道",
-        handler: async () => {
-            await runOneBot12Setup();
-        },
-    });
 
     api.logger?.info?.("[onebot12] plugin loaded");
 }
