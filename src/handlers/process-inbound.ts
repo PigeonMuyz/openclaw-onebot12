@@ -121,12 +121,7 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
     if (!isGroup) {
         const whitelist = getWhitelistUserIds(cfg);
         if (whitelist.length > 0 && !whitelist.includes(String(msg.user_id))) {
-            const denyMsg = "权限不足，请向管理员申请权限";
-            const getConfig = () => getOneBot12Config(api);
-            try {
-                await sendPrivateMsg(String(msg.user_id), denyMsg, getConfig);
-            } catch (_) {}
-            api.logger?.info?.(`[onebot12] private: user ${msg.user_id} not in whitelist, denied`);
+            api.logger?.info?.(`[onebot12] private: user ${msg.user_id} not in whitelist, ignored`);
             return;
         }
         const prefix = getPrivateMessagePrefix(cfg);
