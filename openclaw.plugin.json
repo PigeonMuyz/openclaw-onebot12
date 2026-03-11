@@ -1,0 +1,78 @@
+{
+  "id": "openclaw-onebot12",
+  "name": "OneBot12 Channel",
+  "version": "1.0.0",
+  "description": "OneBot v12 protocol channel (QQ/WeChat/Lagrange via WebSocket)",
+  "author": "PigeonMuyz",
+  "channels": ["onebot12"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "endpoint": {
+        "type": "string",
+        "description": "WebSocket 地址，如 ws://127.0.0.1:8080"
+      },
+      "token": {
+        "type": "string",
+        "description": "鉴权令牌（可选）"
+      },
+      "authType": {
+        "type": "string",
+        "enum": ["none", "bearer", "query"],
+        "default": "none",
+        "description": "鉴权类型"
+      },
+      "selfId": {
+        "type": "string",
+        "description": "机器人账号 ID"
+      },
+      "platform": {
+        "type": "string",
+        "default": "qq",
+        "description": "平台标识（qq, wechat 等）"
+      },
+      "requireMention": {
+        "type": "boolean",
+        "default": true,
+        "description": "群聊是否必须 @ 机器人才回复"
+      },
+      "whitelistUserIds": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "白名单用户 ID。群聊：仅白名单用户 @机器人 时响应；私聊：仅白名单用户可触发"
+      },
+      "privateMessagePrefix": {
+        "type": "string",
+        "description": "私聊消息前缀符号（如 / 或 #），仅以此符号开头的私聊消息才会处理"
+      },
+      "renderMarkdownToPlain": {
+        "type": "boolean",
+        "default": true,
+        "description": "是否将 Markdown 渲染为纯文本"
+      },
+      "longMessageMode": {
+        "type": "string",
+        "enum": ["normal", "og_image", "forward"],
+        "default": "normal",
+        "description": "长消息处理模式"
+      },
+      "longMessageThreshold": {
+        "type": "number",
+        "default": 300,
+        "description": "长消息阈值（字符数）"
+      },
+      "thinkingEmojiId": {
+        "type": "number",
+        "default": 60,
+        "description": "思考中表情 ID"
+      }
+    }
+  },
+  "uiHints": {
+    "token": { "label": "Access Token", "sensitive": true },
+    "endpoint": { "label": "WebSocket 地址", "placeholder": "ws://127.0.0.1:8080" },
+    "requireMention": { "label": "群聊需 @ 回复" },
+    "renderMarkdownToPlain": { "label": "Markdown 转纯文本" }
+  }
+}

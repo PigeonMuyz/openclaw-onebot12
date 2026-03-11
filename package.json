@@ -1,0 +1,75 @@
+{
+  "name": "@pigeonmuyz/openclaw-onebot12",
+  "version": "1.0.0",
+  "description": "OneBot v12 protocol channel plugin for OpenClaw",
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "author": "PigeonMuyz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PigeonMuyz/openclaw-onebot12.git"
+  },
+  "keywords": [
+    "openclaw",
+    "onebot",
+    "onebot12",
+    "qq",
+    "chatbot"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "files": [
+    "dist",
+    "themes",
+    "skills",
+    "openclaw.plugin.json",
+    "README.md"
+  ],
+  "openclaw": {
+    "extensions": ["./dist/index.js"],
+    "skills": ["skills/onebot-ops"],
+    "channel": {
+      "id": "onebot12",
+      "label": "OneBot12",
+      "selectionLabel": "OneBot12 (QQ/Wechat/Lagrange)",
+      "docsPath": "/channels/onebot12",
+      "blurb": "OneBot v12 protocol via WebSocket",
+      "order": 86,
+      "aliases": ["qq12", "ob12"]
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "pub": "npm run build && npm publish"
+  },
+  "dependencies": {
+    "fuse.js": "^7.1.0",
+    "ws": "^8.17.0",
+    "@clack/prompts": "^1.0.0",
+    "tsx": "^4.0.0",
+    "cron": "^4.4.0",
+    "marked": "^15.0.0",
+    "highlight.js": "^11.10.0"
+  },
+  "optionalDependencies": {
+    "node-html-to-image": "^3.0.0"
+  },
+  "peerDependencies": {
+    "openclaw": "*",
+    "clawdbot": "*"
+  },
+  "peerDependenciesMeta": {
+    "clawdbot": { "optional": true },
+    "openclaw": { "optional": true }
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.10"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

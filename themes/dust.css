@@ -1,0 +1,1096 @@
+/**
+ * Markdown 渲染样式集合
+ * 从 dust-fe 项目迁移而来
+ * 包含：基础 Markdown 样式、代码高亮、编辑器样式、链接卡片等
+ */
+
+/* ==================== CSS 变量定义 ==================== */
+:root {
+    /* 主色（青色园林主题） */
+    --main-color: #55a2a0;
+    --main-color-light: #8bc3c2;
+    --shadow-color: #8bc3c2;
+    --main-color-light-2: rgba(139, 195, 194, 0.35);
+    --main-color-trans-1: rgba(85, 162, 160, 0.08);
+    --main-color-trans-2: rgba(85, 162, 160, 0.15);
+    --main-color-trans-3: rgba(85, 162, 160, 0.55);
+
+    /* 背景（画卷/宣纸风） */
+    --background: #faf8f2;
+    --background-paper: #fdfbf7;
+    --background-trans-1: rgba(250, 248, 242, 0.7);
+    --background-trans-2: rgba(250, 248, 242, 0.55);
+
+    --accent-red: #c85540;
+    --accent-red-trans: rgba(200, 85, 64, 0.15);
+    --accent-red-dark: #b23630;
+
+    /* 卡片/内容背景 */
+    --panel-background: rgba(255, 255, 255, 0.9);
+    --panel-background-light: rgba(255, 255, 255, 0.75);
+
+    /* 边框（淡茶白） */
+    --border-color: #e3dfd4;
+    --border: 1px solid var(--border-color);
+
+    /* 字体颜色 */
+    --font-main-color: #333333;
+    --font-secondary-color: #555555;
+    --font-title-color: #4a8e8c;
+    --link-color: #55a2a0;
+
+    /* 字体 */
+    --base-font: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+    --title-font: "Noto Serif SC", serif;
+    --article-font: "Noto Serif SC", serif;
+    --blockquote-font: "Noto Serif SC", serif;
+    --monospace-font: "Source Code Pro", Monaco, "sf code", "Lucida Console", monospace;
+
+    /* 阴影（柔和水墨风） */
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --dark-shadow: rgba(0, 0, 0, 0.06) 0px 0px 4px,
+        rgba(0, 0, 0, 0.10) 0px 2px 8px;
+
+    /* 半透明白玻璃（保留现代感） */
+    --back-filter: saturate(160%) blur(8px);
+    --sidebar-transplate: rgba(255, 255, 255, 0.7);
+    --mainTransplate: rgba(255, 255, 255, 0.9);
+    --mainTransplate-1: rgba(255, 255, 255, 0.7);
+
+    /* 分割线 & 引用 */
+    --blockquote-color: rgba(80, 80, 80, 0.75);
+    --quote-title-font-size: 0.9rem;
+    --quote-tag-font-size: 1.1rem;
+    --quote-lineheight: 33px;
+
+    /* 滚动条（青色） */
+    --scrollbar-color: #55a2a0;
+
+    /* 亮度与小点缀 */
+    --light-color: rgba(255, 255, 255, 0.65);
+    --light-color-2: rgba(255, 255, 255, 0.5);
+    --light-color-3: rgba(85, 162, 160, 0.1);
+    --slight-light-color: rgba(255, 255, 255, 0.1);
+
+    /* 动画曲线 */
+    --focus-time: .3s;
+    --animation-7s: .7s cubic-bezier(0.23, 1, 0.32, 1);
+    --animation-5s: .5s cubic-bezier(0.23, 1, 0.32, 1);
+    --animation-3s: .3s cubic-bezier(0.23, 1, 0.32, 1);
+
+    /* 全局前景背景 */
+    --foreground: #242424;
+    --background-color: white;
+
+    /* 特殊点缀颜色 */
+    --transplant-color: rgba(85, 162, 160, 0.12);
+
+    /* 代码块：统一淡色背景，提高与文字对比度 */
+    --code-block-bg: #f2f0ea;
+    --code-block-fg: #2c2824;
+}
+
+/* OG 图片页面 body（画卷背景） */
+body {
+    background: var(--background);
+    color: var(--font-main-color);
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ==================== 基础 Markdown 样式 ==================== */
+.markdown {
+    font-family: var(--base-font);
+    color: var(--font-main-color);
+    line-height: 1.8;
+    font-size: 16px;
+}
+
+.markdown p {
+    margin: 0 0 1.5em 0;
+    line-height: 1.8;
+}
+
+/* 标题样式 */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+    color: var(--font-title-color);
+    font-family: var(--title-font);
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 1.5em 0 0.8em 0;
+}
+
+.markdown h1 {
+    font-size: 2em;
+    border-bottom: 2px solid var(--main-color-trans-3);
+    padding-bottom: 0.3em;
+}
+
+.markdown h2 {
+    font-size: 1.75em;
+    border-bottom: 1px solid var(--main-color-trans-2);
+    padding-bottom: 0.3em;
+}
+
+.markdown h3 {
+    font-size: 1.5em;
+}
+
+.markdown h4 {
+    font-size: 1.25em;
+}
+
+.markdown h5 {
+    font-size: 1.1em;
+}
+
+.markdown h6 {
+    font-size: 1em;
+    color: var(--font-secondary-color);
+}
+
+/* 链接样式 */
+.markdown a {
+    color: var(--link-color);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.markdown a:hover {
+    border-bottom-color: var(--main-color);
+    color: var(--main-color);
+}
+
+.markdown a.markdown-link {
+    color: var(--link-color);
+}
+
+/* 列表样式 */
+.markdown ul,
+.markdown ol {
+    margin: 0 0 1.5em 0;
+    padding-left: 2em;
+}
+
+.markdown ul {
+    list-style-type: disc;
+}
+
+.markdown ol {
+    list-style-type: decimal;
+}
+
+.markdown li {
+    margin: 0.5em 0;
+    line-height: 1.8;
+}
+
+.markdown li > ul,
+.markdown li > ol {
+    margin: 0.5em 0;
+}
+
+/* 引用块样式 */
+.markdown blockquote {
+    margin: 1.5em 0;
+    padding: 1em 1.5em;
+    border-left: 4px solid var(--main-color);
+    background-color: var(--main-color-trans-1);
+    color: var(--blockquote-color);
+    font-family: var(--blockquote-font);
+    border-radius: 0 4px 4px 0;
+}
+
+.markdown blockquote p {
+    margin: 0;
+}
+
+.markdown blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* 表格样式 */
+.markdown table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    overflow-x: auto;
+    display: block;
+}
+
+.markdown table.markdown-table {
+    border: 1px solid var(--border-color);
+}
+
+.markdown table th,
+.markdown table td {
+    padding: 0.75em 1em;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.markdown table th {
+    background-color: var(--main-color-trans-1);
+    font-weight: 600;
+    color: var(--font-title-color);
+}
+
+.markdown table tr:nth-child(even) {
+    background-color: var(--main-color-trans-1);
+}
+
+.markdown table tr:hover {
+    background-color: var(--main-color-trans-2);
+}
+
+/* 图片样式 */
+.markdown img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+    margin: 1.5em auto;
+}
+
+.markdown img.markdown-image {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.markdown img.markdown-image:hover {
+    transform: scale(1.02);
+}
+
+/* 图片带标题样式 */
+.markdown .image-with-caption {
+    margin: 1.5em 0;
+}
+
+.markdown .image-with-caption img {
+    margin: 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.markdown .img-caption {
+    text-align: center;
+    color: var(--font-secondary-color);
+    font-size: 0.9em;
+    margin-top: 0.5em;
+    font-style: italic;
+}
+
+/* 分割线样式 */
+.markdown hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-color), transparent);
+    margin: 2em 0;
+}
+
+.markdown hr.major {
+    margin: 3em 0;
+}
+
+/* ==================== 代码块样式 ==================== */
+.markdown pre {
+    position: relative;
+    margin: 1.5em 0;
+    overflow: visible;
+    padding: 1px;
+    background: transparent;
+}
+
+.markdown pre > code {
+    position: relative;
+    z-index: 1;
+    display: block;
+    overflow-x: auto;
+    padding: 1.5em 1em;
+    border-left: 10px solid var(--main-color);
+    box-shadow: -1px 0 0 0 var(--main-color-trans-3), 0 0 0 1px var(--border-color);
+    background-color: var(--code-block-bg);
+    font-family: var(--monospace-font);
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: var(--code-block-fg);
+    tab-size: 4;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+}
+
+/* highlight.js 在 .markdown 内：统一淡色背景 + 深色前景，提高对比度 */
+.markdown pre .hljs {
+    background: transparent !important;
+    color: var(--code-block-fg) !important;
+}
+.markdown pre .hljs-keyword { color: #0d6c6a; font-weight: 600; }
+.markdown pre .hljs-string { color: #b23630; }
+.markdown pre .hljs-number { color: #0d6c6a; }
+.markdown pre .hljs-comment { color: #6b7280; }
+.markdown pre .hljs-function { color: #2c2824; }
+.markdown pre .hljs-title { color: #0d6c6a; font-weight: 600; }
+.markdown pre .hljs-params { color: #4a8e8c; }
+.markdown pre .hljs-built_in { color: #0d6c6a; }
+.markdown pre .hljs-class { color: #0d6c6a; }
+.markdown pre .hljs-variable { color: #2c2824; }
+.markdown pre .hljs-attr { color: #4a8e8c; }
+.markdown pre .hljs-tag { color: #0d6c6a; }
+.markdown pre .hljs-name { color: #0d6c6a; }
+.markdown pre .hljs-meta { color: #6b7280; }
+
+.markdown code {
+    font-family: var(--monospace-font);
+    font-size: 0.9em;
+}
+
+.markdown :not(pre) > code {
+    position: relative;
+    padding: 0.2em 0.4em;
+    border-radius: 0.3em;
+    color: var(--accent-red);
+    border: 1px solid var(--border-color);
+    background-color: var(--panel-background);
+    white-space: normal;
+}
+
+/* 代码块阴影效果 */
+.markdown pre:after,
+.markdown pre:before {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0.75em;
+    left: 0.18em;
+    width: 40%;
+    height: 20%;
+    max-height: 13em;
+    box-shadow: 0 13px 8px var(--shadow-color);
+    transform: rotate(-2deg);
+    z-index: 0;
+}
+
+.markdown pre:after {
+    right: 0.75em;
+    left: auto;
+    transform: rotate(2deg);
+}
+
+/* ==================== 代码工具箱样式 ==================== */
+.code-toolbox {
+    position: absolute;
+    top: 0;
+    right: 15px;
+    transition: 0.5s ease-out;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+}
+
+.code-toolbox .expand-button {
+    margin: 10px;
+    padding: 6px 11px;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: var(--base-font);
+    border-radius: 999em;
+    background-color: var(--main-color);
+    color: white !important;
+    transition: 0.5s ease;
+}
+
+.code-toolbox .expand-button-click {
+    transform: rotate(-180deg);
+    background-color: var(--shadow-color);
+}
+
+.code-toolbox .copy-button {
+    margin: 10px;
+    padding: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: var(--base-font);
+    border-radius: 0.8em;
+    background-color: var(--main-color);
+    color: white !important;
+    width: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    transition: 0.5s ease;
+}
+
+.code-toolbox .copy-button-hover {
+    background-color: #6DC45F;
+    width: 150px;
+}
+
+.code-toolbox-hidden {
+    opacity: 0;
+    transition: 1s ease-out;
+}
+
+.code-toolbox-display {
+    opacity: 1;
+    transition: 1s ease-out;
+}
+
+.markdown code {
+    height: fit-content;
+    transition: 0.5s ease-out;
+}
+
+.collapse-code {
+    height: 20px !important;
+    transition: 0.5s ease-out;
+}
+
+/* ==================== Prism 语法高亮样式 ==================== */
+code[class*="language-"],
+pre[class*="language-"] {
+    color: var(--font-main-color);
+    font-family: var(--monospace-font);
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #7F848E;
+}
+
+.token.punctuation {
+    color: #D19A66;
+}
+
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted,
+.token.function-name,
+.token.property {
+    color: var(--accent-red);
+}
+
+.token.number {
+    color: var(--accent-red-dark);
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: var(--main-color);
+}
+
+.token.selector {
+    color: var(--main-color-light);
+}
+
+.token.function {
+    color: var(--font-title-color);
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+    color: var(--main-color-light-3, #8bc3c2);
+    opacity: 0.9;
+}
+
+.token.variable {
+    color: var(--accent-red-dark);
+}
+
+.token.atrule,
+.token.attr-value {
+    color: var(--main-color);
+}
+
+.token.class-name {
+    color: var(--font-title-color);
+}
+
+.token.keyword {
+    color: var(--accent-red);
+}
+
+.token.regex,
+.token.important {
+    color: var(--accent-red-dark);
+}
+
+.token.bold {
+    font-weight: 700;
+}
+
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+.token.namespace {
+    color: var(--font-title-color);
+    opacity: 0.7;
+}
+
+/* ==================== Markdown 扩展块样式 ==================== */
+.markdown-ext-block {
+    border-radius: 0.6rem;
+    border: 1px solid var(--main-color);
+    background-color: var(--main-color-trans-1);
+    padding: 3px 15px;
+    margin-bottom: 25px;
+}
+
+.markdown-ext-block .iconfont {
+    font-size: 1.2rem;
+    margin-right: 0.7rem;
+    color: var(--main-color);
+}
+
+.markdown-ext-block .title {
+    color: var(--main-color);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: unset;
+    line-height: unset;
+}
+
+.markdown-ext-block .desc {
+    color: black;
+    font-weight: 700;
+    margin-left: 0.7rem;
+}
+
+/* ==================== 链接卡片样式 ==================== */
+.link-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 10px;
+    background: var(--card-bg, #f9fafb);
+    border: 1px solid var(--card-border, #e5e7eb);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    user-select: none;
+}
+
+.link-card:hover {
+    background: var(--card-hover-bg, #f3f4f6);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.link-card a {
+    flex: 1;
+    color: #111827;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.link-card::before {
+    font-size: 1rem;
+    opacity: 0.6;
+}
+
+/* 详细链接卡片样式 */
+.detail-url-wrapper {
+    width: 100%;
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.detail-url-container {
+    padding: 0px 10px;
+    border-radius: 0.8rem;
+    background-color: rgba(93, 103, 232, 0.1);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--animation-5s);
+    max-width: 80%;
+}
+
+@keyframes loading-mask {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+.detail-url-container:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(203, 129, 218, 0.2) 25%,
+        rgba(93, 103, 232, 0.1) 37%,
+        rgba(255, 255, 255, 0) 63%
+    );
+    background-size: 400% 100%;
+    animation: loading-mask 1.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.detail-url-container .cover {
+    position: relative;
+    overflow: hidden;
+    height: 40px;
+    width: 40px;
+    border-radius: 0.6em;
+    flex-shrink: 0;
+}
+
+.detail-url-container .cover img {
+    position: absolute;
+    top: 50%;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transform: translateY(-50%);
+}
+
+.detail-url-container .main {
+    margin: 10px;
+    width: 80%;
+    min-width: 0;
+}
+
+.detail-url-container .title {
+    font-size: 1.0rem;
+    font-family: var(--base-font);
+    margin-bottom: 5px;
+    letter-spacing: unset;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.detail-url-container .desc {
+    font-size: 0.9rem;
+    color: var(--font-secondary-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==================== 图片展示相关样式 ==================== */
+.markdown-image-display-container {
+    cursor: zoom-in;
+    object-fit: cover;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(10px);
+    background-color: rgba(20, 20, 20, 0.3);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.image-display-arrow {
+    width: 90px;
+    height: 90px;
+    font-size: 55px;
+    padding: 10px 30px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s ease;
+    border-radius: 100%;
+    cursor: pointer;
+    color: white;
+}
+
+.image-display-arrow.left {
+    transform: rotate(90deg);
+}
+
+.image-display-arrow.right {
+    transform: rotate(-90deg);
+}
+
+.image-display-arrow:hover {
+    box-shadow: 0 0 25px var(--shadow-color), 0 0 25px var(--shadow-color),
+        0 0 25px var(--shadow-color), 0 0 25px var(--shadow-color);
+}
+
+.image-display-arrow.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* 图片上传动画 */
+.image-uploading {
+    opacity: 0.5;
+    animation: flicker 1s infinite alternate;
+}
+
+@keyframes flicker {
+    from {
+        opacity: 0.1;
+    }
+    to {
+        opacity: 0.5;
+    }
+}
+
+.image-uploaded {
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+
+/* ==================== 编辑器相关样式 ==================== */
+.editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 4px 4px 0 0;
+    gap: 4px;
+}
+
+.editor-container {
+    min-height: 60vh;
+    position: relative;
+    margin-bottom: 100px;
+}
+
+.editor {
+    min-height: 300px;
+    padding: 16px;
+    outline: none;
+}
+
+.source-editor {
+    min-height: 300px;
+    outline: none;
+    border: none;
+    resize: none;
+    height: auto;
+    width: 100%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ProseMirror 默认样式 */
+.ProseMirror {
+    outline: none;
+    min-height: 300px;
+}
+
+.ProseMirror p {
+    margin: 0 0 1em 0;
+}
+
+.ProseMirror-focused {
+    outline: unset;
+    border: unset;
+}
+
+/* CodeMirror 样式 */
+.markdown-editor .CodeMirror {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.markdown-editor .CodeMirror-activeline-gutter {
+    background-color: var(--transplant-color);
+}
+
+.markdown-editor .CodeMirror-activeline-background {
+    background-color: var(--transplant-color);
+}
+
+.markdown-editor .CodeMirror-foldgutter {
+    display: none;
+}
+
+/* ==================== 代码块头部样式 ==================== */
+.code-block-header {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 50;
+}
+
+.code-block-wrapper {
+    position: relative;
+}
+
+.code-block-wrapper pre {
+    overflow-x: auto;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+}
+
+/* ==================== 文章布局样式 ==================== */
+.dustblog-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.dustblog-title {
+    text-align: center;
+}
+
+.dustblog-title h1 {
+    text-align: left;
+    font-size: 30px;
+    color: var(--font-title-color);
+}
+
+.dustblog-title h2 {
+    color: var(--sidebar-color, #6b6b6b);
+    font-size: 25px;
+    text-align: left;
+    text-decoration: underline;
+}
+
+.dustblog-cover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.dustblog-body {
+    max-width: 1600px;
+    margin-bottom: 50px;
+}
+
+.dustblog-extra {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 标签容器 */
+.icon-container {
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+}
+
+.k-tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    height: fit-content;
+}
+
+/* 阅读时间 */
+.reading-time {
+    font-family: var(--base-font);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--sidebar-color, #6b6b6b);
+}
+
+.reading-time > div {
+    display: flex;
+    align-items: center;
+}
+
+.reading-time .sp {
+    margin-right: 5px;
+}
+
+.reading-time .underline {
+    text-decoration: underline;
+}
+
+/* ==================== 响应式布局 ==================== */
+@media screen and (max-width: 3839px) {
+    /* 4k screen */
+    .dustblog-recommend,
+    .dustblog-comment {
+        width: 1080px;
+    }
+
+    .dustblog-title,
+    .dustblog-body {
+        width: 880px;
+    }
+
+    .dustblog-cover {
+        max-width: 880px;
+    }
+}
+
+@media screen and (max-width: 1919px) {
+    /* 2k screen */
+    .dustblog-title,
+    .dustblog-recommend,
+    .dustblog-comment,
+    .dustblog-body {
+        width: 60%;
+    }
+
+    .dustblog-cover {
+        max-width: 60%;
+    }
+}
+
+@media screen and (max-width: 1080px) {
+    /* 1k screen */
+    .dustblog-title,
+    .dustblog-recommend,
+    .dustblog-comment,
+    .dustblog-body {
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 736px) {
+    /* phone */
+    .dustblog-title,
+    .dustblog-recommend,
+    .dustblog-comment,
+    .dustblog-body {
+        width: 100%;
+    }
+
+    .markdown pre:after,
+    .markdown pre:before {
+        bottom: 14px;
+        box-shadow: none;
+    }
+
+    .code-toolbox {
+        opacity: 1 !important;
+        right: 5px;
+    }
+
+    .code-toolbox .copy-button,
+    .code-toolbox .expand-button {
+        margin: 5px;
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 454px) {
+    /* small phone */
+    .dustblog-title,
+    .dustblog-recommend,
+    .dustblog-comment,
+    .dustblog-body {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .dustblog-cover {
+        max-width: 100%;
+    }
+}
+
+/* ==================== 其他辅助样式 ==================== */
+.markdown .no-selection {
+    user-select: none;
+}
+
+/* 行号样式 */
+pre[class*="language-"].line-numbers.line-numbers {
+    padding-left: 0;
+}
+
+pre[class*="language-"].line-numbers.line-numbers code {
+    padding-left: 3.8em;
+}
+
+pre[class*="language-"].line-numbers.line-numbers .line-numbers-rows {
+    left: 0;
+}
+
+/* 高亮行样式 */
+pre[class*="language-"][data-line] {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+pre[data-line] code {
+    position: relative;
+    padding-left: 4em;
+}
+
+pre .line-highlight {
+    margin-top: 0;
+}
+
+/* 打印样式 */
+@media print {
+    .markdown pre > code {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .code-toolbox {
+        display: none;
+    }
+}
+
+/* 滚动条样式 */
+.markdown pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+.markdown pre::-webkit-scrollbar-track {
+    background: var(--main-color-trans-1);
+}
+
+.markdown pre::-webkit-scrollbar-thumb {
+    background: var(--main-color-trans-3);
+    border-radius: 4px;
+}
+
+.markdown pre::-webkit-scrollbar-thumb:hover {
+    background: var(--main-color);
+}
