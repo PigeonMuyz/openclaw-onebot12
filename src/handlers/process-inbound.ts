@@ -117,9 +117,8 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
 
     const userId = String(msg.user_id ?? "");
     const groupId = msg.group_id;
-    const sessionId = isGroup
-        ? `onebot12:group:${groupId}`.toLowerCase()
-        : `onebot12:${userId}`.toLowerCase();
+    // 用户导向：同一用户不管在群聊还是私聊中都共享同一个 AI 上下文
+    const sessionId = `onebot12:user:${userId}`.toLowerCase();
 
     const route = runtime.channel.routing?.resolveAgentRoute?.({
         cfg,
