@@ -134,7 +134,10 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
 
     const envelopeOptions = runtime.channel.reply?.resolveEnvelopeFormatOptions?.(cfg) ?? {};
     const chatType = isGroup ? "group" : "direct";
-    const fromLabel = userId;
+    // 从消息中提取昵称（v12 部分实现会在事件中包含 sender 信息）
+    const senderObj = (msg as any).sender;
+    const nickname = senderObj?.card || senderObj?.nickname || senderObj?.user_name || senderObj?.user_displayname || "";
+    const fromLabel = nickname ? `${nickname} (@${userId})` : userId;
 
     const formattedBody =
         runtime.channel.reply?.formatInboundEnvelope?.({
@@ -189,7 +192,7 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
         SessionKey: sessionId,
         AccountId: config.accountId ?? "default",
         ChatType: chatType,
-        ConversationLabel: replyTarget,
+        ConversationLabel: nickname ? `${nickname} (@${userId})` : replyTarget,
         SenderName: fromLabel,
         SenderId: userId,
         Provider: "onebot12",
