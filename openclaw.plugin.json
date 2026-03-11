@@ -1,7 +1,7 @@
 {
   "id": "openclaw-onebot12",
   "name": "OneBot12 Channel",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "OneBot v12 protocol channel (QQ/WeChat/Lagrange via WebSocket)",
   "author": "PigeonMuyz",
   "channels": ["onebot12"],
