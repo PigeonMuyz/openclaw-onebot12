@@ -29,6 +29,9 @@ import { loadPluginSdk, getSdk } from "../sdk.js";
 const DEFAULT_HISTORY_LIMIT = 20;
 export const sessionHistories = new Map<string, Array<{ sender: string; body: string; timestamp: number; messageId: string }>>();
 
+/** /stop 中断支持：每个用户 session 对应一个 AbortController */
+const activeSessionAborts = new Map<string, AbortController>();
+
 export async function processInboundMessage(api: any, msg: OneBot12Message): Promise<void> {
     await loadPluginSdk();
     const { buildPendingHistoryContextFromMap, recordPendingHistoryEntry, clearHistoryEntriesIfEnabled } = getSdk();
@@ -68,6 +71,31 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
     }
     if (!messageText?.trim()) {
         api.logger?.info?.("[onebot12] ignoring empty message");
+        return;
+    }
+
+    // ===== /stop 中断指令 =====
+    const trimmedCmd = messageText.trim().toLowerCase();
+    if (trimmedCmd === "/stop" || trimmedCmd === "stop" || trimmedCmd === "/停止") {
+        const userId = String(msg.user_id ?? "");
+        const stopSessionId = `onebot12:user:${userId}`.toLowerCase();
+        const controller = activeSessionAborts.get(stopSessionId);
+        const getConfig = () => getOneBot12Config(api);
+        const isGroup = msg.detail_type === "group";
+        if (controller) {
+            controller.abort();
+            activeSessionAborts.delete(stopSessionId);
+            api.logger?.info?.(`[onebot12] /stop: aborted session ${stopSessionId}`);
+            try {
+                if (isGroup && msg.group_id) await sendGroupMsg(String(msg.group_id), "⏹️ 已停止生成", getConfig);
+                else await sendPrivateMsg(userId, "⏹️ 已停止生成", getConfig);
+            } catch (_) {}
+        } else {
+            try {
+                if (isGroup && msg.group_id) await sendGroupMsg(String(msg.group_id), "当前没有正在生成的回复", getConfig);
+                else await sendPrivateMsg(userId, "当前没有正在生成的回复", getConfig);
+            } catch (_) {}
+        }
         return;
     }
 
@@ -233,6 +261,10 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
     setActiveReplySessionId(replySessionId);
     if (longMessageMode === "forward") setForwardSuppressDelivery(true);
 
+    // 注册 AbortController 支持 /stop 中断
+    const abortController = new AbortController();
+    activeSessionAborts.set(sessionId, abortController);
+
     const deliveredChunks: Array<{ index: number; text?: string; rawText?: string; mediaUrl?: string }> = [];
     let chunkIndex = 0;
     const getConfig = () => getOneBot12Config(api);
@@ -260,6 +292,11 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
             cfg,
             dispatcherOptions: {
                 deliver: async (payload: unknown, info: { kind: string }) => {
+                    // /stop 中断检查
+                    if (abortController.signal.aborted) {
+                        api.logger?.info?.("[onebot12] deliver skipped: session aborted by /stop");
+                        return;
+                    }
                     const p = payload as { text?: string; body?: string; mediaUrl?: string; mediaUrls?: string[] } | string;
                     const replyText = typeof p === "string" ? p : (p?.text ?? p?.body ?? "");
                     const mediaUrl = typeof p === "string" ? undefined : (p?.mediaUrl ?? p?.mediaUrls?.[0]);
@@ -323,6 +360,7 @@ export async function processInboundMessage(api: any, msg: OneBot12Message): Pro
             else if (uid) await sendPrivateMsg(uid, `处理失败: ${err?.message?.slice(0, 80) || "未知错误"}`);
         } catch (_) { }
     } finally {
+        activeSessionAborts.delete(sessionId);
         setForwardSuppressDelivery(false);
         setActiveReplySessionId(null);
         clearActiveReplyTarget();
